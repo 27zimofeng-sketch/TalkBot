@@ -1,59 +1,60 @@
-// script.js
-const chatBox = document.getElementById('chat-box');
-const userInput = document.getElementById('user-input');
-const sendBtn = document.getElementById('send-btn');
-
-// The Knowledge Base
-const knowledge = {
-    "hello": "Hi there! Ready to learn about AI today?",
-    "ai": "Artificial Intelligence (AI) is the simulation of human intelligence by machines, especially computer systems.",
-    "how do you work": "I use Natural Language Processing (NLP) to scan your text for keywords and match them to my database!",
-    "nlp": "NLP stands for Natural Language Processing. It helps computers understand, interpret, and generate human language.",
-    "chemistry": "Chemistry is the study of matter and the changes it undergoes. It's often called the central science!",
-    "atom": "An atom is the basic unit of a chemical element. It consists of protons, neutrons, and electrons.",
-    "html": "HTML (HyperText Markup Language) is the standard language for creating web pages.",
-    "javascript": "JavaScript is a programming language that allows you to implement complex features on web pages, like this chat!",
-    "future": "The future of AI is about collaboration between humans and machines to solve complex problems.",
-    "help": "You can ask me about AI definitions, Chemistry basics, or how this website was built."
-};
-
-function getResponse(input) {
-    const text = input.toLowerCase();
-    
-    // Check for keyword matches
-    for (let key in knowledge) {
-        if (text.includes(key)) {
-            return knowledge[key];
-        }
-    }
-    
-    // If no keyword matches, provide an "educational fallback"
-    return "That's an interesting point. While I don't have a specific answer for that yet, remember that AI works by processing data patterns. Try asking me about 'NLP' or 'Chemistry'!";
+:root {
+    --primary: #2563eb;
+    --dark: #1e293b;
+    --light: #f8fafc;
+    --accent: #38bdf8;
 }
 
-function appendMessage(text, sender) {
-    const msgDiv = document.createElement('div');
-    msgDiv.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
-    msgDiv.innerText = text;
-    chatBox.appendChild(msgDiv);
-    chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    background-color: var(--light);
+    color: var(--dark);
 }
 
-function handleSend() {
-    const message = userInput.value.trim();
-    if (message === "") return;
-
-    appendMessage(message, 'user');
-    userInput.value = '';
-
-    // Simulate "thinking" delay
-    setTimeout(() => {
-        const response = getResponse(message);
-        appendMessage(response, 'bot');
-    }, 600);
+nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 5%;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-sendBtn.addEventListener('click', handleSend);
-userInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') handleSend();
-});
+.logo { font-weight: 700; font-size: 1.5rem; }
+.logo span { color: var(--primary); }
+
+nav ul { display: flex; list-style: none; gap: 20px; }
+nav a { text-decoration: none; color: var(--dark); font-weight: 500; cursor: pointer; }
+
+section { display: none; padding: 50px 10%; min-height: 80vh; }
+section.active { display: block; animation: fadeIn 0.5s ease; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Chat UI */
+.chat-container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+.chat-header { background: var(--primary); color: white; padding: 15px; text-align: center; }
+
+.chat-box { height: 400px; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+
+.bot-msg, .user-msg { padding: 10px 15px; border-radius: 15px; max-width: 80%; }
+.bot-msg { background: #e2e8f0; align-self: flex-start; }
+.user-msg { background: var(--primary); color: white; align-self: flex-end; }
+
+.chat-input-area { display: flex; border-top: 1px solid #ddd; }
+.chat-input-area input { flex: 1; border: none; padding: 15px; outline: none; }
+.chat-input-area button { background: var(--primary); color: white; border: none; padding: 0 20px; cursor: pointer; }
+
+/* Grid for Tips */
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
+.card { background: white; padding: 20px; border-radius: 8px; border-left: 5px solid var(--primary); }
+
+.btn-primary { background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; }
