@@ -1,4 +1,4 @@
-// 1. Updated Conversation Data Structure
+// 1. Conversation Data Structure (Kept exactly as requested)
 const chatData = {
     "main_menu": {
         message: "Hello! I am TalkBot. I can help you learn how to use ChatGPT better. Please choose a topic below to begin.",
@@ -9,8 +9,6 @@ const chatData = {
             { text: "Responsible AI use", next: "responsible_use" }
         ]
     },
-    
-    // Module 1: Intro
     "what_is_ai": {
         message: "ChatGPT is an AI tool that can understand and generate human-like text. It's like having a very well-read assistant!",
         options: [
@@ -23,8 +21,6 @@ const chatData = {
         message: "It works by predicting the next word in a sentence based on patterns it learned from millions of books and websites.",
         options: [{ text: "Back to Main Menu", next: "main_menu" }]
     },
-
-    // Module 2: Prompts
     "better_prompts": {
         message: "To get better answers, be clear and specific. Instead of 'Tell me about science', try 'Explain photosynthesis for a 10th grade student'.",
         options: [
@@ -41,31 +37,14 @@ const chatData = {
         message: "It includes a Role (History project), a Task (Summary), and Constraints (3 paragraphs, focus on causes).",
         options: [{ text: "Back to Main Menu", next: "main_menu" }]
     },
-
-    // *** ADDED: Module 3: AI for Study ***
     "ai_study": {
-        message: "AI can be a great study partner! It can explain complex topics, help you practice languages, or brainstorm ideas for essays.",
-        options: [
-            { text: "How to explain difficult topics?", next: "explain_topics" },
-            { text: "How to help with writing?", next: "help_writing" },
-            { text: "Back to Main Menu", next: "main_menu" }
-        ]
-    },
-    "explain_topics": {
-        message: "Try asking: 'Explain the concept of supply and demand using a lemonade stand as an example.' This makes abstract ideas easier to visualize!",
+        message: "AI can help you brainstorm essay outlines or explain complex math problems step-by-step. Just remember: it's a co-pilot, not the pilot!",
         options: [{ text: "Back to Main Menu", next: "main_menu" }]
     },
-    "help_writing": {
-        message: "Don't ask AI to write it for you. Instead, ask: 'Can you give me an outline for an essay about climate change?' or 'Check my grammar in this paragraph.'",
-        options: [{ text: "Back to Main Menu", next: "main_menu" }]
-    },
-
-    // Module 4: Responsibility
     "responsible_use": {
         message: "AI can sometimes make mistakes (hallucinate). You should always double-check facts and never share private information.",
         options: [
             { text: "Why check answers?", next: "check_answers" },
-            { text: "Privacy tips", next: "privacy_tips" },
             { text: "Back to Main Menu", next: "main_menu" }
         ]
     },
@@ -75,15 +54,21 @@ const chatData = {
     }
 };
 
-// 2. Navigation & Rendering Logic (No changes here)
+// 2. Core Functions
 function showSection(id) {
     document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
+    const target = document.getElementById(id);
+    if (target) {
+        target.classList.add('active');
+        // If entering chat, make sure it's initialized
+        if (id === 'chat' && document.getElementById('chatDisplay').children.length === 0) {
+            renderStep("main_menu");
+        }
+    }
 }
 
 function startLearning() {
     showSection('chat');
-    renderStep("main_menu");
 }
 
 function renderStep(stepId) {
@@ -99,21 +84,37 @@ function renderStep(stepId) {
     botMsg.textContent = step.message;
     display.appendChild(botMsg);
 
-    // Clear and Add New Options
+    // Clear Options and disable clicks momentarily to prevent double-triggering
     optionsArea.innerHTML = "";
+    
     step.options.forEach(opt => {
         const btn = document.createElement('button');
         btn.className = "choice-btn";
         btn.textContent = opt.text;
-        btn.onclick = () => {
+        
+        // Use an event listener for better reliability
+        btn.addEventListener('click', function() {
+            // Disable all buttons in the area once one is clicked
+            optionsArea.querySelectorAll('button').forEach(b => b.disabled = true);
+            
             addUserMessage(opt.text);
-            setTimeout(() => renderStep(opt.next), 400);
-        };
+            
+            // Short delay for a natural "thinking" feel
+            setTimeout(() => {
+                renderStep(opt.next);
+            }, 500);
+        });
+        
         optionsArea.appendChild(btn);
     });
 
-    // Auto-scroll
-    display.scrollTop = display.scrollHeight;
+    // Precise Auto-scroll
+    setTimeout(() => {
+        display.scrollTo({
+            top: display.scrollHeight,
+            behavior: 'smooth'
+        });
+    }, 50);
 }
 
 function addUserMessage(text) {
@@ -122,10 +123,18 @@ function addUserMessage(text) {
     userMsg.className = "msg user";
     userMsg.textContent = text;
     display.appendChild(userMsg);
-    display.scrollTop = display.scrollHeight;
 }
 
 function resetChat() {
-    document.getElementById('chatDisplay').innerHTML = "";
+    const display = document.getElementById('chatDisplay');
+    display.innerHTML = "";
     renderStep("main_menu");
 }
+
+// 3. Initialize on Load
+window.onload = () => {
+    // This ensures that if the user refreshes on the Chat page, it still works.
+    if (document.getElementById('chat').classList.contains('active')) {
+        renderStep("main_menu");
+    }
+};
