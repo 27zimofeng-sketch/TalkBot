@@ -3,27 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TalkBot | AI Education</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <title>TalkBot | Master the Art of AI</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
+    <nav>
+        <div class="logo">TalkBot<span>.ai</span></div>
+        <ul>
+            <li><a href="#" onclick="showSection('home')">Home</a></li>
+            <li><a href="#" onclick="showSection('chat')">Chat</a></li>
+            <li><a href="#" onclick="showSection('tips')">Learning Tips</a></li>
+            <li><a href="#" onclick="showSection('practice')">Practice</a></li>
+        </ul>
+    </nav>
 
-    <div class="chat-container">
-        <header>
-            <h1>TalkBot</h1>
-            <p>Educational AI Interface</p>
-        </header>
-        
-        <div id="chat-box" class="chat-box">
-            <div class="message bot-message">Hello! I am TalkBot. Ask me about AI, Chemistry, or how I work!</div>
+    <section id="home" class="active">
+        <div class="hero">
+            <h1>Master AI Interaction</h1>
+            <p>TalkBot is your personal guide to learning prompt engineering and responsible AI usage. Stop searching, start asking better questions.</p>
+            <button class="btn-primary" onclick="showSection('chat')">Start Chatting</button>
         </div>
+    </section>
 
-        <div class="input-area">
-            <input type="text" id="user-input" placeholder="Type your question here..." autocomplete="off">
-            <button id="send-btn">Send</button>
+    <section id="chat">
+        <div class="chat-container">
+            <div class="chat-header">TalkBot Assistant</div>
+            <div class="chat-box" id="chatBox">
+                <div class="bot-msg">Hello! I am TalkBot. I'm here to help you learn how to use AI like ChatGPT. Try asking me "How do I write a good prompt?"</div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="userInput" placeholder="Ask TalkBot anything...">
+                <button onclick="sendMessage()">Send</button>
+            </div>
         </div>
-    </div>
+    </section>
+
+    <section id="tips">
+        <h2>Expert Learning Tips</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>The R-G-C Formula</h3>
+                <p><strong>Role:</strong> Tell AI who it is (e.g., "Act as a historian").<br><strong>Goal:</strong> Define the task.<br><strong>Context:</strong> Provide background details.</p>
+            </div>
+            <div class="card">
+                <h3>Iterative Feedback</h3>
+                <p>Never settle for the first answer. Ask the AI to "Refine," "Shorten," or "Add more examples."</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="practice">
+        <h2>Practice Lab</h2>
+        <p>Try to fix this "Bad Prompt": <i>"Write a story."</i></p>
+        <textarea id="practiceInput" placeholder="Enter a better version of that prompt here..."></textarea>
+        <button class="btn-primary" onclick="checkPractice()">Check Progress</button>
+        <p id="feedback"></p>
+    </section>
 
     <script src="script.js"></script>
 </body>
