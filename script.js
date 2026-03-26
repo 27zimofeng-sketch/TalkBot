@@ -1,4 +1,4 @@
-// 1. Conversation Data Structure
+// 1. Updated Conversation Data Structure
 const chatData = {
     "main_menu": {
         message: "Hello! I am TalkBot. I can help you learn how to use ChatGPT better. Please choose a topic below to begin.",
@@ -42,6 +42,24 @@ const chatData = {
         options: [{ text: "Back to Main Menu", next: "main_menu" }]
     },
 
+    // *** ADDED: Module 3: AI for Study ***
+    "ai_study": {
+        message: "AI can be a great study partner! It can explain complex topics, help you practice languages, or brainstorm ideas for essays.",
+        options: [
+            { text: "How to explain difficult topics?", next: "explain_topics" },
+            { text: "How to help with writing?", next: "help_writing" },
+            { text: "Back to Main Menu", next: "main_menu" }
+        ]
+    },
+    "explain_topics": {
+        message: "Try asking: 'Explain the concept of supply and demand using a lemonade stand as an example.' This makes abstract ideas easier to visualize!",
+        options: [{ text: "Back to Main Menu", next: "main_menu" }]
+    },
+    "help_writing": {
+        message: "Don't ask AI to write it for you. Instead, ask: 'Can you give me an outline for an essay about climate change?' or 'Check my grammar in this paragraph.'",
+        options: [{ text: "Back to Main Menu", next: "main_menu" }]
+    },
+
     // Module 4: Responsibility
     "responsible_use": {
         message: "AI can sometimes make mistakes (hallucinate). You should always double-check facts and never share private information.",
@@ -57,7 +75,7 @@ const chatData = {
     }
 };
 
-// 2. Navigation & Rendering Logic
+// 2. Navigation & Rendering Logic (No changes here)
 function showSection(id) {
     document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
@@ -70,6 +88,8 @@ function startLearning() {
 
 function renderStep(stepId) {
     const step = chatData[stepId];
+    if (!step) return; // Safety check
+
     const display = document.getElementById('chatDisplay');
     const optionsArea = document.getElementById('optionsArea');
 
