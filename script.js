@@ -1,66 +1,111 @@
-// Navigation System
+// 1. Conversation Data Structure
+const chatData = {
+    "main_menu": {
+        message: "Hello! I am TalkBot. I can help you learn how to use ChatGPT better. Please choose a topic below to begin.",
+        options: [
+            { text: "What is ChatGPT?", next: "what_is_ai" },
+            { text: "How to ask better prompts?", next: "better_prompts" },
+            { text: "Using AI for study", next: "ai_study" },
+            { text: "Responsible AI use", next: "responsible_use" }
+        ]
+    },
+    
+    // Module 1: Intro
+    "what_is_ai": {
+        message: "ChatGPT is an AI tool that can understand and generate human-like text. It's like having a very well-read assistant!",
+        options: [
+            { text: "How does it work?", next: "how_it_works" },
+            { text: "What can it help me do?", next: "what_can_it_do" },
+            { text: "Back to Main Menu", next: "main_menu" }
+        ]
+    },
+    "how_it_works": {
+        message: "It works by predicting the next word in a sentence based on patterns it learned from millions of books and websites.",
+        options: [{ text: "Back to Main Menu", next: "main_menu" }]
+    },
+
+    // Module 2: Prompts
+    "better_prompts": {
+        message: "To get better answers, be clear and specific. Instead of 'Tell me about science', try 'Explain photosynthesis for a 10th grade student'.",
+        options: [
+            { text: "Show me a good example", next: "good_example" },
+            { text: "Show me a bad example", next: "bad_example" },
+            { text: "Back to Main Menu", next: "main_menu" }
+        ]
+    },
+    "good_example": {
+        message: "Good: 'Write a 3-paragraph summary of the French Revolution focusing on its causes for a history project.'",
+        options: [{ text: "Why is this good?", next: "why_good" }, { text: "Back", next: "better_prompts" }]
+    },
+    "why_good": {
+        message: "It includes a Role (History project), a Task (Summary), and Constraints (3 paragraphs, focus on causes).",
+        options: [{ text: "Back to Main Menu", next: "main_menu" }]
+    },
+
+    // Module 4: Responsibility
+    "responsible_use": {
+        message: "AI can sometimes make mistakes (hallucinate). You should always double-check facts and never share private information.",
+        options: [
+            { text: "Why check answers?", next: "check_answers" },
+            { text: "Privacy tips", next: "privacy_tips" },
+            { text: "Back to Main Menu", next: "main_menu" }
+        ]
+    },
+    "check_answers": {
+        message: "AI doesn't 'know' facts; it knows patterns. Always use a textbook or a trusted website to verify dates, math, and names.",
+        options: [{ text: "Back to Main Menu", next: "main_menu" }]
+    }
+};
+
+// 2. Navigation & Rendering Logic
 function showSection(id) {
     document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
 }
 
-// Chatbot Logic
-function sendMessage() {
-    const input = document.getElementById('userInput');
-    const chatBox = document.getElementById('chatBox');
-    
-    if (input.value.trim() === "") return;
-
-    // Append User Message
-    const userDiv = document.createElement('div');
-    userDiv.className = 'user-msg';
-    userDiv.textContent = input.value;
-    chatBox.appendChild(userDiv);
-
-    // Generate Bot Response
-    const botDiv = document.createElement('div');
-    botDiv.className = 'bot-msg';
-    botDiv.textContent = getBotResponse(input.value.toLowerCase());
-    
-    setTimeout(() => {
-        chatBox.appendChild(botDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }, 600);
-
-    input.value = "";
+function startLearning() {
+    showSection('chat');
+    renderStep("main_menu");
 }
 
-function getBotResponse(text) {
-    if (text.includes("prompt")) {
-        return "A good prompt usually includes a Role, a Task, and Constraints. Try: 'Act as a science teacher and explain gravity to a 5-year-old.'";
-    } else if (text.includes("hello") || text.includes("hi")) {
-        return "Hello! I'm TalkBot. Ready to learn how to communicate with AI better?";
-    } else if (text.includes("responsible") || text.includes("ethic")) {
-        return "Responsibility means checking facts! AI can 'hallucinate' (make things up), so always verify important information.";
-    } else if (text.includes("better") || text.includes("accurate")) {
-        return "To get accurate answers, give the AI examples of what you want. This is called 'Few-shot prompting'.";
-    } else if (text.includes("who are you")) {
-        return "I am TalkBot, an educational tool designed to help you master AI interaction.";
-    } else {
-        return "That's an interesting question! To get a better answer from an AI like ChatGPT, try adding more context or specific details to your request.";
-    }
+function renderStep(stepId) {
+    const step = chatData[stepId];
+    const display = document.getElementById('chatDisplay');
+    const optionsArea = document.getElementById('optionsArea');
+
+    // Add Bot Message
+    const botMsg = document.createElement('div');
+    botMsg.className = "msg bot";
+    botMsg.textContent = step.message;
+    display.appendChild(botMsg);
+
+    // Clear and Add New Options
+    optionsArea.innerHTML = "";
+    step.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "choice-btn";
+        btn.textContent = opt.text;
+        btn.onclick = () => {
+            addUserMessage(opt.text);
+            setTimeout(() => renderStep(opt.next), 400);
+        };
+        optionsArea.appendChild(btn);
+    });
+
+    // Auto-scroll
+    display.scrollTop = display.scrollHeight;
 }
 
-// Practice Section Feedback
-function checkPractice() {
-    const input = document.getElementById('practiceInput').value.toLowerCase();
-    const feedback = document.getElementById('feedback');
-
-    if (input.length > 20 && (input.includes("write") || input.includes("story"))) {
-        feedback.textContent = "Great job! You added more detail. Specificity is key to AI mastery.";
-        feedback.style.color = "green";
-    } else {
-        feedback.textContent = "Try to be more specific. Tell the AI what kind of story, the genre, or who the characters are!";
-        feedback.style.color = "red";
-    }
+function addUserMessage(text) {
+    const display = document.getElementById('chatDisplay');
+    const userMsg = document.createElement('div');
+    userMsg.className = "msg user";
+    userMsg.textContent = text;
+    display.appendChild(userMsg);
+    display.scrollTop = display.scrollHeight;
 }
 
-// Allow "Enter" key to send message
-document.getElementById('userInput').addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') sendMessage();
-});
+function resetChat() {
+    document.getElementById('chatDisplay').innerHTML = "";
+    renderStep("main_menu");
+}
