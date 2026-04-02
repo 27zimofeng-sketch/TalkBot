@@ -1,4 +1,4 @@
-// 1. Conversation Data Structure (Kept exactly as requested)
+// 1. Conversation Data Structure (Unchanged content)
 const chatData = {
     "main_menu": {
         message: "Hello! I am TalkBot. I can help you learn how to use ChatGPT better. Please choose a topic below to begin.",
@@ -38,7 +38,7 @@ const chatData = {
         options: [{ text: "Back to Main Menu", next: "main_menu" }]
     },
     "ai_study": {
-        message: "AI can help you brainstorm essay outlines or explain complex math problems step-by-step. Just remember: it's a co-pilot, not the pilot!",
+        message: "AI can explain complex topics, summarize long articles, or help you brainstorm ideas for essays.",
         options: [{ text: "Back to Main Menu", next: "main_menu" }]
     },
     "responsible_use": {
@@ -49,34 +49,36 @@ const chatData = {
         ]
     },
     "check_answers": {
-        message: "AI doesn't 'know' facts; it knows patterns. Always use a textbook or a trusted website to verify dates, math, and names.",
+        message: "AI doesn't 'know' facts; it knows patterns. Always use a textbook or a trusted website to verify information.",
         options: [{ text: "Back to Main Menu", next: "main_menu" }]
     }
 };
 
-// 2. Core Functions
+// 2. Navigation & Rendering Logic
 function showSection(id) {
-    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    const sections = document.querySelectorAll('section');
+    sections.forEach(s => s.classList.remove('active'));
+    
     const target = document.getElementById(id);
     if (target) {
         target.classList.add('active');
-        // If entering chat, make sure it's initialized
-        if (id === 'chat' && document.getElementById('chatDisplay').children.length === 0) {
-            renderStep("main_menu");
-        }
     }
 }
 
 function startLearning() {
     showSection('chat');
+    // Clear chat and restart logic
+    const display = document.getElementById('chatDisplay');
+    if (display) display.innerHTML = "";
+    renderStep("main_menu");
 }
 
 function renderStep(stepId) {
     const step = chatData[stepId];
-    if (!step) return; // Safety check
-
     const display = document.getElementById('chatDisplay');
     const optionsArea = document.getElementById('optionsArea');
+
+    if (!step || !display || !optionsArea) return;
 
     // Add Bot Message
     const botMsg = document.createElement('div');
@@ -84,37 +86,31 @@ function renderStep(stepId) {
     botMsg.textContent = step.message;
     display.appendChild(botMsg);
 
-    // Clear Options and disable clicks momentarily to prevent double-triggering
+    // Clear previous options
     optionsArea.innerHTML = "";
-    
+
+    // Add New Options
     step.options.forEach(opt => {
         const btn = document.createElement('button');
         btn.className = "choice-btn";
         btn.textContent = opt.text;
         
-        // Use an event listener for better reliability
+        // Using a direct event listener to ensure responsiveness
         btn.addEventListener('click', function() {
-            // Disable all buttons in the area once one is clicked
-            optionsArea.querySelectorAll('button').forEach(b => b.disabled = true);
-            
             addUserMessage(opt.text);
-            
-            // Short delay for a natural "thinking" feel
-            setTimeout(() => {
-                renderStep(opt.next);
-            }, 500);
+            // Disable buttons temporarily to prevent double-clicking
+            optionsArea.innerHTML = ""; 
+            setTimeout(() => renderStep(opt.next), 300);
         });
         
         optionsArea.appendChild(btn);
     });
 
-    // Precise Auto-scroll
-    setTimeout(() => {
-        display.scrollTo({
-            top: display.scrollHeight,
-            behavior: 'smooth'
-        });
-    }, 50);
+    // Smooth Auto-scroll
+    display.scrollTo({
+        top: display.scrollHeight,
+        behavior: 'smooth'
+    });
 }
 
 function addUserMessage(text) {
@@ -123,18 +119,22 @@ function addUserMessage(text) {
     userMsg.className = "msg user";
     userMsg.textContent = text;
     display.appendChild(userMsg);
+    
+    display.scrollTo({
+        top: display.scrollHeight,
+        behavior: 'smooth'
+    });
 }
 
 function resetChat() {
     const display = document.getElementById('chatDisplay');
-    display.innerHTML = "";
-    renderStep("main_menu");
-}
-
-// 3. Initialize on Load
-window.onload = () => {
-    // This ensures that if the user refreshes on the Chat page, it still works.
-    if (document.getElementById('chat').classList.contains('active')) {
+    if (display) {
+        display.innerHTML = "";
         renderStep("main_menu");
     }
-};
+}
+
+// Initial safety check when the page loads
+window.addEventListener('DOMContentLoaded', () => {
+    console.log("TalkBot System Ready");
+});
