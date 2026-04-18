@@ -3,37 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TalkBot | Guided AI Learning</title>
+    <title>TalkBot | AI Learning Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <nav>
-        <div class="logo">TalkBot<span>.edu</span></div>
-        <ul>
-            <li><a href="#" onclick="showSection('home')">Home</a></li>
-            <li><a href="#" onclick="showSection('chat')">Learning Bot</a></li>
-        </ul>
-    </nav>
+    <div class="bg-blob"></div>
 
-    <section id="home" class="active">
-        <div class="hero">
-            <h1>Learn to Master ChatGPT</h1>
-            <p>Welcome to TalkBot. Instead of typing, follow our guided paths to discover how to write better prompts, study effectively, and use AI safely.</p>
-            <button class="btn-main" onclick="startLearning()">Start Learning Path</button>
-        </div>
-    </section>
-
-    <section id="chat">
-        <div class="chat-wrapper">
-            <div class="chat-display" id="chatDisplay">
+    <div class="dashboard">
+        <aside class="side-panel">
+            <div class="glass-card">
+                <div class="card-title">🎮 Speed Quiz</div>
+                <div class="game-box">
+                    <p id="q-text" style="font-size: 0.9rem; min-height: 45px; font-weight: 600;">Loading quiz...</p >
+                    <div class="quiz-controls" id="quiz-controls">
+                        <button class="choice-btn quiz-opt" onclick="playGame(false)" style="border-color: var(--accent); color: var(--accent);">❌ False</button>
+                        <button class="choice-btn quiz-opt" onclick="playGame(true)" style="border-color: var(--success); color: var(--success);">✅ True</button>
+                    </div>
+                    <p id="q-feedback" style="font-size: 0.8rem; margin-top: 12px; font-weight: 800;"></p >
                 </div>
-            <div class="options-area" id="optionsArea">
-                </div>
-            <div class="controls">
-                <button class="btn-restart" onclick="resetChat()">Restart from Menu</button>
             </div>
+
+            <div class="glass-card">
+                <div class="card-title">💡 Things to Ask</div>
+                <div class="suggested-box">
+                    <button class="suggest-item" onclick="askSuggested('What is AI?')">❓ What is AI?</button>
+                    <button class="suggest-item" onclick="askSuggested('How does AI learn?')">❓ How does AI learn?</button>
+                    <button class="suggest-item" onclick="askSuggested('What are Prompt rules?')">❓ Prompt rules?</button>
+                    <button class="suggest-item" onclick="askSuggested('Is AI always right?')">❓ Is AI always right?</button>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="card-title">📊 Session Progress</div>
+                <p style="font-size: 0.8rem; margin-bottom: 10px;">Concepts Mastered: <span id="mastered-count" style="color: var(--primary); font-weight: 800;">0</span></p >
+                <div class="progress-container">
+                    <div id="progress-fill" class="progress-fill"></div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-chat">
+            <header class="chat-header">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div class="avatar-glow">🤖</div>
+                    <div>
+                        <strong style="font-size: 1rem; display: block;">TalkBot Console</strong>
+                        <span style="font-size: 0.7rem; color: var(--success); font-weight: 700;">● SYSTEM ACTIVE</span>
+                    </div>
+                </div>
+                <button onclick="resetChat()" class="restart-link">Reset Session</button>
+            </header>
+            
+            <div class="chat-portal" id="chatDisplay">
+                </div>
+
+            <div class="input-bar">
+                <input type="text" id="userInput" placeholder="Ask about SPEC, AI, or Web Dev...">
+                <button class="send-btn" id="sendBtn">Send</button>
+            </div>
+        </main>
+
+        <aside class="side-panel">
+            <div class="glass-card wiki-card" onclick="openWiki('hallucination')">
+                <div class="card-title">📖 Hallucination</div>
+                <p style="font-size: 0.75rem;">When AI is confidently wrong.</p >
+            </div>
+            
+            <div class="glass-card wiki-card" onclick="openWiki('spec')">
+                <div class="card-title">✍️ S.P.E.C. Rule</div>
+                <p style="font-size: 0.75rem;">Formula for perfect prompts.</p >
+            </div>
+            
+            <div class="glass-card wiki-card" onclick="openWiki('ethics')">
+                <div class="card-title">🛡️ AI Ethics</div>
+                <p style="font-size: 0.75rem;">Responsible AI co-piloting.</p >
+            </div>
+
+            <div class="glass-card wiki-card" onclick="openLab()" style="border: 2px solid var(--primary);">
+                <div class="card-title">🔬 Prompt Lab</div>
+                <p style="font-size: 0.75rem;">Interactive AI experiments.</p >
+            </div>
+        </aside>
+    </div>
+
+    <div id="wikiOverlay" class="wiki-overlay">
+        <div class="overlay-content">
+            <button class="close-btn" onclick="closeWiki()">× Back</button>
+            <div id="wikiBody">
+                </div>
         </div>
-    </section>
+    </div>
 
     <script src="script.js"></script>
 </body>
